@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"image/png"
@@ -11,16 +12,16 @@ import (
 )
 
 // save *image.RGBA to filePath with PNG format.
-func save(img *image.RGBA, filePath string) {
+func save(img *image.RGBA, filePath string) error {
 	file, err := os.Create(filePath)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer file.Close()
-	png.Encode(file, img)
+	return png.Encode(file, img)
 }
 
-func run() {
+func run() error {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println("panic")
@@ -31,7 +32,7 @@ func run() {
 	// Capture each displays.
 	n := screenshot.NumActiveDisplays()
 	if n <= 0 {
-		panic("Active display not found")
+		return errors.New("no screen")
 	}
 
 	var all image.Rectangle = image.Rect(0, 0, 0, 0)
@@ -54,15 +55,18 @@ func run() {
 	fmt.Printf("%v\n", all)
 	img, err := screenshot.Capture(all.Min.X, all.Min.Y, all.Dx(), all.Dy())
 	if err != nil {
-		panic(err)
+		return errors.New("capture error")
 	}
-	save(img, "all.png")
-
-	time.Sleep(time.Second * 60 * 1)
+	return save(img, "all.png")
 }
 
 func main() {
 	for {
-		run()
+		err := run()
+		if err != nil {
+			time.Sleep(time.Second * 5)
+		} else {
+			time.Sleep(time.Second * 60 * 3)
+		}
 	}
 }
