@@ -66,7 +66,7 @@ func main() {
 		if err != nil {
 			time.Sleep(time.Second * 5)
 		} else {
-			time.Sleep(time.Second * 60 * 3)
+			time.Sleep(time.Second * 60 * 1)
 		}
 	}
 }
