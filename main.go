@@ -36,7 +36,7 @@ func main() {
 
 			img, err := screenshot.CaptureRect(bounds)
 			if err != nil {
-				panic(err)
+				fmt.Printf("err: %v", err)
 			}
 			fileName := fmt.Sprintf("%d_%dx%d.png", i, bounds.Dx(), bounds.Dy())
 			save(img, fileName)
@@ -52,6 +52,6 @@ func main() {
 		}
 		save(img, "all.png")
 
-		time.Sleep(time.Second * 60 * 5)
+		time.Sleep(time.Second * 60 * 1)
 	}
 }
